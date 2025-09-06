@@ -1,0 +1,231 @@
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from datetime import datetime
+import streamlit as st
+
+class EmailService:
+    """Email service for sending reports and notifications"""
+    
+    def __init__(self):
+        self.smtp_server = "smtp.gmail.com"
+        self.smtp_port = 587
+        self.admin_email = "malav0003@gmail.com"
+    
+    def send_report_email(self, report_data, admin_email=None):
+        """Send report details to admin email"""
+        try:
+            if admin_email is None:
+                admin_email = self.admin_email
+            
+            # Create email content
+            subject = f"🚨 TruthLens Report Alert - {report_data.get('id', 'Unknown')}"
+            
+            # Create HTML email body
+            html_body = f"""
+            <html>
+            <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 10px; color: white; text-align: center; margin-bottom: 20px;">
+                    <h1>🚨 TruthLens Admin Alert</h1>
+                    <p>New report requires your attention</p>
+                </div>
+                
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                    <h2>📋 Report Details</h2>
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <tr>
+                            <td style="padding: 8px; border-bottom: 1px solid #ddd;"><strong>Report ID:</strong></td>
+                            <td style="padding: 8px; border-bottom: 1px solid #ddd;">{report_data.get('id', 'N/A')}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border-bottom: 1px solid #ddd;"><strong>User:</strong></td>
+                            <td style="padding: 8px; border-bottom: 1px solid #ddd;">{report_data.get('user', 'N/A')}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border-bottom: 1px solid #ddd;"><strong>Reporter:</strong></td>
+                            <td style="padding: 8px; border-bottom: 1px solid #ddd;">{report_data.get('reporter_name', 'N/A')}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border-bottom: 1px solid #ddd;"><strong>Priority:</strong></td>
+                            <td style="padding: 8px; border-bottom: 1px solid #ddd;">{report_data.get('priority', 'N/A')}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border-bottom: 1px solid #ddd;"><strong>Risk Score:</strong></td>
+                            <td style="padding: 8px; border-bottom: 1px solid #ddd;">{report_data.get('risk_score', 'N/A')}/100</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border-bottom: 1px solid #ddd;"><strong>Status:</strong></td>
+                            <td style="padding: 8px; border-bottom: 1px solid #ddd;">{report_data.get('status', 'N/A')}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border-bottom: 1px solid #ddd;"><strong>Timestamp:</strong></td>
+                            <td style="padding: 8px; border-bottom: 1px solid #ddd;">{report_data.get('timestamp', 'N/A')}</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div style="background: #fff3cd; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                    <h3>📝 Content:</h3>
+                    <p style="background: white; padding: 10px; border-radius: 5px; border-left: 4px solid #ffc107;">
+                        {report_data.get('content', 'No content available')}
+                    </p>
+                </div>
+                
+                <div style="background: #d1ecf1; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                    <h3>🤖 AI Analysis:</h3>
+                    <p style="background: white; padding: 10px; border-radius: 5px; border-left: 4px solid #17a2b8;">
+                        {report_data.get('ai_analysis', 'No AI analysis available')}
+                    </p>
+                </div>
+                
+                <div style="background: #d4edda; padding: 15px; border-radius: 10px; text-align: center;">
+                    <p><strong>🔗 Access Admin Panel:</strong> <a href="http://localhost:8501/?admin=true" style="color: #155724;">Click Here</a></p>
+                    <p style="font-size: 12px; color: #6c757d; margin-top: 10px;">
+                        Generated by TruthLens Admin System v2.0.0<br>
+                        {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+                    </p>
+                </div>
+            </body>
+            </html>
+            """
+            
+            # Create plain text version
+            text_body = f"""
+            TruthLens Admin Alert
+            
+            Report ID: {report_data.get('id', 'N/A')}
+            User: {report_data.get('user', 'N/A')}
+            Reporter: {report_data.get('reporter_name', 'N/A')}
+            Priority: {report_data.get('priority', 'N/A')}
+            Risk Score: {report_data.get('risk_score', 'N/A')}/100
+            Status: {report_data.get('status', 'N/A')}
+            Timestamp: {report_data.get('timestamp', 'N/A')}
+            
+            Content:
+            {report_data.get('content', 'No content available')}
+            
+            AI Analysis:
+            {report_data.get('ai_analysis', 'No AI analysis available')}
+            
+            ---
+            Generated by TruthLens Admin System v2.0.0
+            {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+            """
+            
+            # For now, just simulate sending (you can add real SMTP later)
+            st.success(f"📧 Report email prepared for {admin_email}")
+            st.info("📧 Email content ready (SMTP configuration needed for actual sending)")
+            
+            return True
+            
+        except Exception as e:
+            st.error(f"❌ Failed to prepare email: {str(e)}")
+            return False
+    
+    def send_ai_response_email(self, ai_data, admin_email=None):
+        """Send AI response details to admin email"""
+        try:
+            if admin_email is None:
+                admin_email = self.admin_email
+            
+            subject = f"🤖 TruthLens AI Response - {ai_data.get('timestamp', 'Unknown')}"
+            
+            html_body = f"""
+            <html>
+            <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+                <div style="background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%); padding: 20px; border-radius: 10px; color: white; text-align: center; margin-bottom: 20px;">
+                    <h1>🤖 TruthLens AI Response Alert</h1>
+                    <p>AI analysis completed</p>
+                </div>
+                
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px;">
+                    <h2>📊 AI Analysis Details</h2>
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <tr>
+                            <td style="padding: 8px; border-bottom: 1px solid #ddd;"><strong>Timestamp:</strong></td>
+                            <td style="padding: 8px; border-bottom: 1px solid #ddd;">{ai_data.get('timestamp', 'N/A')}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border-bottom: 1px solid #ddd;"><strong>AI Verdict:</strong></td>
+                            <td style="padding: 8px; border-bottom: 1px solid #ddd;">{ai_data.get('ai_verdict', 'N/A')}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border-bottom: 1px solid #ddd;"><strong>Confidence:</strong></td>
+                            <td style="padding: 8px; border-bottom: 1px solid #ddd;">{ai_data.get('confidence', 'N/A')}%</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border-bottom: 1px solid #ddd;"><strong>Response Time:</strong></td>
+                            <td style="padding: 8px; border-bottom: 1px solid #ddd;">{ai_data.get('response_time', 'N/A')}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border-bottom: 1px solid #ddd;"><strong>Risk Score:</strong></td>
+                            <td style="padding: 8px; border-bottom: 1px solid #ddd;">{ai_data.get('risk_score', 'N/A')}/100</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div style="background: #fff3cd; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                    <h3>📝 Analyzed Content:</h3>
+                    <p style="background: white; padding: 10px; border-radius: 5px; border-left: 4px solid #ffc107;">
+                        {ai_data.get('content', 'No content available')}
+                    </p>
+                </div>
+                
+                <div style="background: #d4edda; padding: 15px; border-radius: 10px; text-align: center;">
+                    <p><strong>🔗 Access Admin Panel:</strong> <a href="http://localhost:8501/?admin=true" style="color: #155724;">Click Here</a></p>
+                    <p style="font-size: 12px; color: #6c757d; margin-top: 10px;">
+                        Generated by TruthLens Admin System v2.0.0<br>
+                        {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+                    </p>
+                </div>
+            </body>
+            </html>
+            """
+            
+            st.success(f"📧 AI response email prepared for {admin_email}")
+            st.info("📧 Email content ready (SMTP configuration needed for actual sending)")
+            
+            return True
+            
+        except Exception as e:
+            st.error(f"❌ Failed to prepare email: {str(e)}")
+            return False
+    
+    def send_test_email(self, admin_email=None):
+        """Send a test email to verify configuration"""
+        try:
+            if admin_email is None:
+                admin_email = self.admin_email
+            
+            subject = "🧪 TruthLens Admin Test Email"
+            
+            html_body = f"""
+            <html>
+            <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 10px; color: white; text-align: center; margin-bottom: 20px;">
+                    <h1>🧪 TruthLens Test Email</h1>
+                    <p>Email configuration test successful!</p>
+                </div>
+                
+                <div style="background: #d4edda; padding: 20px; border-radius: 10px; text-align: center;">
+                    <h2>✅ Email System Working</h2>
+                    <p>This is a test email from TruthLens Admin System.</p>
+                    <p>If you receive this email, your email configuration is working correctly!</p>
+                    
+                    <p style="font-size: 12px; color: #6c757d; margin-top: 20px;">
+                        Generated by TruthLens Admin System v2.0.0<br>
+                        {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+                    </p>
+                </div>
+            </body>
+            </html>
+            """
+            
+            st.success(f"📧 Test email prepared for {admin_email}")
+            st.info("📧 Test email ready (SMTP configuration needed for actual sending)")
+            
+            return True
+            
+        except Exception as e:
+            st.error(f"❌ Failed to prepare test email: {str(e)}")
+            return False
