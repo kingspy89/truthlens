@@ -1,7 +1,9 @@
-# 🔍 TruthLens - AI-Powered Misinformation Detection System
+# this is solo project same as hackthon idea of misinformation-detector-2025 
+
+# 🔍 TruthLens - AI-Powered Misinformation Detection System(steamlit version)
 
 **Version:** 2.0.0  
-**Platform:** Streamlit Web Application  
+**Platform:** Streamlit Web Application  (react project also avaliable , but not upaloaded)
 **Purpose:** Forensic-level misinformation detection and fact-checking system
 
 ---
